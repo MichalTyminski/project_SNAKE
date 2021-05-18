@@ -30,36 +30,36 @@ Snake::~Snake()
 {
 }
 
-Menu::Menu(int width, int height){
-   if(!font.loadFromFile("C:/Users/mtymi/OneDrive/Pulpit/Studia/2 semestr/PSiO/Labolatoria/projekt_SNAKE/TTF.ttf")){
-       std::cerr << "Could not load texture" << std::endl;
-   }
+// Menu::Menu(int width, int height){
+//    if(!font.loadFromFile("C:/Users/mtymi/OneDrive/Pulpit/Studia/2 semestr/PSiO/Labolatoria/projekt_SNAKE/TTF.ttf")){
+//        std::cerr << "Could not load texture" << std::endl;
+//    }
 
-   menu[0].setFont(font);
-   menu[0].setColor(sf::Color::Red);
-   menu[0].setString("PLAY");
-   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 1));
+//    menu[0].setFont(font);
+//    menu[0].setColor(sf::Color::Red);
+//    menu[0].setString("PLAY");
+//    menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 1));
 
-   menu[0].setFont(font);
-   menu[0].setColor(sf::Color::White);
-   menu[0].setString("OPTIONS");
-   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 2));
+//    menu[0].setFont(font);
+//    menu[0].setColor(sf::Color::White);
+//    menu[0].setString("OPTIONS");
+//    menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 2));
 
-   menu[0].setFont(font);
-   menu[0].setColor(sf::Color::White);
-   menu[0].setString("EXIT");
-   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 3));
-}
+//    menu[0].setFont(font);
+//    menu[0].setColor(sf::Color::White);
+//    menu[0].setString("EXIT");
+//    menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 3));
+// }
 
-Menu::~Menu()
-{
-}
+// Menu::~Menu()
+// {
+// }
 
-void Menu::draw(sf::RenderWindow &window){
-    for(int i = 0; i < MAX_NUMBER_OF_ITEMS; i++){
-        window.draw(menu[i]);
-    }
-}
+// void Menu::draw(sf::RenderWindow &window){
+//     for(int i = 0; i < MAX_NUMBER_OF_ITEMS; i++){
+//         window.draw(menu[i]);
+//     }
+// }
 
 void Snake::set_size(){
     if(level == 1){
@@ -241,27 +241,27 @@ void Snake::animated(){
             level_check();
         }
 
-//        window.clear(sf::Color::Black);
+       window.clear(sf::Color::Black);
 
-//        for(int i = 0; i < window_size_x/size; i++){ // drawing background
-//            for (int j = 0; j < window_size_y/size; j++){
-//                background.setPosition(j * size, i * size);
-//                window.draw(background);
-//            }
-//        }
+       for(int i = 0; i < window_size_x/size; i++){ // drawing background
+           for (int j = 0; j < window_size_y/size; j++){
+               background.setPosition(j * size, i * size);
+               window.draw(background);
+           }
+       }
 
-//        shape_apple.setPosition(apple.x * size, apple.y * size); // drawing apple
-//        window.draw(shape_apple);
+       shape_apple.setPosition(apple.x * size, apple.y * size); // drawing apple
+       window.draw(shape_apple);
 
-//        for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){ // drawing rocks
-//            shape_rock.setPosition(position_of_rock_x[i] * size, position_of_rock_y[i] * size);
-//            window.draw(shape_rock);
-//        }
+       for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){ // drawing rocks
+           shape_rock.setPosition(position_of_rock_x[i] * size, position_of_rock_y[i] * size);
+           window.draw(shape_rock);
+       }
 
-//        for(int i = 0; i < lenght; i++){ // drawing snake
-//            shape_snake.setPosition(ssnake[i].x * size, ssnake[i].y * size);
-//            window.draw(shape_snake);
-//        }
+       for(int i = 0; i < lenght; i++){ // drawing snake
+           shape_snake.setPosition(ssnake[i].x * size, ssnake[i].y * size);
+           window.draw(shape_snake);
+       }
 
         window.display();
     }
