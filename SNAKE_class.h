@@ -61,21 +61,21 @@ private:
     float show_rock_time_variable;
 };
 
-class Menu{
-public:
-    Menu(int width, int height);
-    ~Menu();
+// class Menu{
+// public:
+//     Menu(int width, int height);
+//     ~Menu();
 
-    void draw(sf::RenderWindow &window);
-    void MoveUp();
-    void MoveDown();
+//     void draw(sf::RenderWindow &window);
+//     void MoveUp();
+//     void MoveDown();
 
-private:
-    int selecteditemindex;
-    sf::Font font;
-    sf::Text menu[MAX_NUMBER_OF_ITEMS];
+// private:
+//     int selecteditemindex;
+//     sf::Font font;
+//     sf::Text menu[MAX_NUMBER_OF_ITEMS];
 
-};
+// };
 
 
 
