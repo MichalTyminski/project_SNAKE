@@ -182,8 +182,8 @@ void Snake::animated(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y), "SNAKE by Michal Tyminski");
 
-    Menu menu(window_size_x, window_size_y);
-    menu.draw(window);
+//     Menu menu(window_size_x, window_size_y);
+//     menu.draw(window);
 
     sf::Clock clock;
     srand(time(NULL));
