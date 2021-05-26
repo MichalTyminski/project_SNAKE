@@ -16,4 +16,5 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
+    Board_class.h \
     SNAKE_class.h

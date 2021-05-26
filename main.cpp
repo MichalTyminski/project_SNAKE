@@ -3,12 +3,16 @@
 #include <ostream>
 #include <iostream>
 #include "SNAKE_class.h"
+#include "Board_class.h"
 
 using namespace std;
 
 int main()
 {
     Snake snake;
-    snake.animated();
+    Board board;
+    snake.board = &board;
+    board.snake = &snake;
+    board.game();
     return 0;
 }
