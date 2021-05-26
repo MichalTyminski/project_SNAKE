@@ -45,7 +45,7 @@ public:
     float time_delay;
     float show_rock_time;
     float show_rock_time_variable;
-    Snake *snake;
+    std::vector<Snake*> snakes;
     bool level_change;
 
 private:

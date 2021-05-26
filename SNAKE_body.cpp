@@ -7,9 +7,9 @@
 #include <vector>
 #include <map>
 
-Snake::Snake()
+Snake::Snake(sf::Color color_)
 {
-
+    color = color_;
     lenght = 1;
     direction = 1;
 }
@@ -27,6 +27,7 @@ Board::Board(){
     show_rock_time = 0.0001;
     show_rock_time_variable = 0.0001;
     level = 1;
+    level_change = false;
 
     apple.x = rand() % window_size_x/size;
     apple.y = rand() % window_size_y/size;
@@ -179,11 +180,13 @@ void Snake::through_walls(){
 }
 
 void Board::level_check(){
+    for(auto snake : snakes){
     if(snake -> lenght == 5){
         snake -> lenght = 1;
         level ++;
         level_change = true;
     }
+}
 }
 
 void Board::game(){
@@ -215,7 +218,7 @@ void Board::game(){
     background.setOutlineColor(sf::Color::White);
 
     shape_snake.setSize(SIZE);
-    shape_snake.setFillColor(sf::Color::Green);
+    //shape_snake.setFillColor(sf::Color::Green);
     shape_snake.setOutlineThickness(1);
     shape_snake.setOutlineColor(sf::Color::White);
 
@@ -236,7 +239,9 @@ void Board::game(){
         time_to_delay += time;
         std::cout << level_change << std::endl;
 
+        for(auto snake : snakes){
         snake -> set_direction();
+        }
 
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -261,12 +266,14 @@ void Board::game(){
                 set_size();
                 time_to_delay = 0;
                 set_rock_position();
+                for(auto snake : snakes){
                 snake -> snake_move();
                 snake -> snake_direction();
                 snake -> crash_with_rock();
                 snake -> feed_me();
                 snake -> suicide();
                 snake -> through_walls();
+                }
                 level_check();
             }
 
@@ -286,9 +293,12 @@ void Board::game(){
             window.draw(shape_rock);
         }
 
+        for(auto snake : snakes){
+            shape_snake.setFillColor(snake->color);
         for(int i = 0; i < snake -> lenght; i++){ // drawing snake
             shape_snake.setPosition(snake -> ssnake[i].x * size, snake -> ssnake[i].y * size);
             window.draw(shape_snake);
+        }
         }
         }
         window.display();

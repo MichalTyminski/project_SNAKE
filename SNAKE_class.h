@@ -12,7 +12,7 @@ class Board;
 
 class Snake : public sf::RectangleShape{
 public:
-    Snake();
+    Snake(sf::Color);
     virtual ~Snake();
 
     struct StructSnake
@@ -23,7 +23,7 @@ public:
 
 
 
-
+    sf::Color color;
     void set_direction();
     void snake_move();
     void snake_direction();

@@ -9,10 +9,15 @@ using namespace std;
 
 int main()
 {
-    Snake snake;
+    std::vector<Snake*> snakes;
+    Snake snake(sf::Color::Green);
+    snakes.push_back(&snake);
+    Snake snake2(sf::Color::Blue);
+    snakes.push_back(&snake2);
     Board board;
     snake.board = &board;
-    board.snake = &snake;
+    snake2.board = &board;
+    board.snakes = snakes;
     board.game();
     return 0;
 }
