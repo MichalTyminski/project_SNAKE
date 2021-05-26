@@ -9,11 +9,13 @@ using namespace std;
 
 int main()
 {
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SNAKE by Michal Tyminski");
+
     std::vector<Snake*> snakes;
     Snake snake(sf::Color::Green);
     snakes.push_back(&snake);
     Snake snake2(sf::Color::Blue);
-    snakes.push_back(&snake2);
+    //snakes.push_back(&snake2);
     Board board;
     snake.board = &board;
     snake2.board = &board;

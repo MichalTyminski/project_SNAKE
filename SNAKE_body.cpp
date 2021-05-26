@@ -195,7 +195,7 @@ void Board::game(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y), "SNAKE by Michal Tyminski");
     sf::Font font;
-    if (!font.loadFromFile("C:/Users/mtymi/OneDrive/Pulpit/Studia/2 semestr/PSiO/Labolatoria/projekt_SNAKE/Padauk-Regular.ttf"))
+    if (!font.loadFromFile("./Padauk-Regular.ttf"))
     {
         std::cout << "ERROR" << std::endl;
     }
@@ -210,34 +210,37 @@ void Board::game(){
     srand(time(NULL));
 
     sf::RectangleShape background, shape_snake, shape_apple, shape_rock;
-    sf::Vector2f SIZE(size, size);
 
-    background.setSize(SIZE);
-    background.setFillColor(sf::Color::Black);
-    background.setOutlineThickness(1);
-    background.setOutlineColor(sf::Color::White);
-
-    shape_snake.setSize(SIZE);
-    //shape_snake.setFillColor(sf::Color::Green);
-    shape_snake.setOutlineThickness(1);
-    shape_snake.setOutlineColor(sf::Color::White);
-
-    shape_apple.setSize(SIZE);
-    shape_apple.setFillColor(sf::Color::Red);
-    shape_apple.setOutlineThickness(1);
-    shape_apple.setOutlineColor(sf::Color::White);
-
-    shape_rock.setSize(SIZE);
-    shape_rock.setFillColor(sf::Color::Yellow);
-    shape_rock.setOutlineThickness(1);
-    shape_rock.setOutlineColor(sf::Color::White);
 
     while (window.isOpen()) {
+        set_size();
+
+        sf::Vector2f SIZE(size, size);
+
+        background.setSize(SIZE);
+        background.setFillColor(sf::Color::Black);
+        background.setOutlineThickness(1);
+        background.setOutlineColor(sf::Color::White);
+
+        shape_snake.setSize(SIZE);
+        shape_snake.setFillColor(sf::Color::Green);
+        shape_snake.setOutlineThickness(1);
+        shape_snake.setOutlineColor(sf::Color::White);
+
+        shape_apple.setSize(SIZE);
+        shape_apple.setFillColor(sf::Color::Red);
+        shape_apple.setOutlineThickness(1);
+        shape_apple.setOutlineColor(sf::Color::White);
+
+        shape_rock.setSize(SIZE);
+        shape_rock.setFillColor(sf::Color::Yellow);
+        shape_rock.setOutlineThickness(1);
+        shape_rock.setOutlineColor(sf::Color::White);
+
 
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
         time_to_delay += time;
-        std::cout << level_change << std::endl;
 
         for(auto snake : snakes){
         snake -> set_direction();
