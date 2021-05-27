@@ -190,7 +190,7 @@ void Board::game(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y), "SNAKE by Michal Tyminski");
 
-    sf::Texture text_1;
+    sf::Texture text_1, text_2, text_3, text_4;
     if (!text_1.loadFromFile("./level_complete.png"))
     {
         std::cout << "ERROR" << std::endl;
@@ -199,7 +199,6 @@ void Board::game(){
     text_level_complete.setTexture(text_1);
     text_level_complete.setPosition(window_size_x/2 - text_level_complete.getGlobalBounds().width/2, 100);
 
-    sf::Texture text_2;
     if (!text_2.loadFromFile("./contiune.png"))
     {
         std::cout << "ERROR" << std::endl;
@@ -208,7 +207,6 @@ void Board::game(){
     text_contiune.setTexture(text_2);
     text_contiune.setPosition(window_size_x/2 - text_contiune.getGlobalBounds().width/2, 275);
 
-    sf::Texture text_3;
     if (!text_3.loadFromFile("./exite.png"))
     {
         std::cout << "ERROR" << std::endl;
@@ -216,6 +214,14 @@ void Board::game(){
     sf::Sprite text_exit;
     text_exit.setTexture(text_3);
     text_exit.setPosition(window_size_x/2 - text_exit.getGlobalBounds().width/2, 350);
+
+    if (!text_4.loadFromFile("./win.png"))
+    {
+        std::cout << "ERROR" << std::endl;
+    }
+    sf::Sprite text_win;
+    text_win.setTexture(text_4);
+    text_win.setPosition(window_size_x/2 - text_win.getGlobalBounds().width/2, 100);
 
 
 
@@ -271,7 +277,21 @@ void Board::game(){
 
         window.clear(sf::Color::Black);
 
-        if(level_change){
+        if(level_change && level == 4){
+            window.draw(text_win);
+            window.draw(text_exit);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width){
+                        if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+                            window.close();
+                        }
+                    }
+                }
+            }
+
+        }else if(level_change){
             window.draw(text_level_complete);
             window.draw(text_contiune);
             window.draw(text_exit);
@@ -287,8 +307,8 @@ void Board::game(){
                         if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
                             window.close();
                         }
+                    }
                 }
-            }
             }
         }else{
             if(time_to_delay > time_delay){
