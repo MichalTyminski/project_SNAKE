@@ -14,6 +14,7 @@ Snake::Snake(sf::Color color_, int control_)
     control = control_;
     lenght = 1;
     direction = 1;
+    lifes = 3;
 }
 
 Snake::~Snake()
@@ -89,6 +90,7 @@ void Snake::crash_with_rock(){
     for(unsigned long long i = 0; i < board -> position_of_rock_x.size(); i++){
         if(ssnake[0].x == board -> position_of_rock_x[i] && ssnake[0].y == board -> position_of_rock_y[i] && lenght > 1){
             lenght --;
+            lifes --;
             board -> position_of_rock_x[i] = rand() % board -> window_size_x/board -> size;
             board -> position_of_rock_y[i] = rand() % board -> window_size_y/board -> size;
         }
@@ -158,7 +160,7 @@ void Board::set_size(){
 
 void Board::level_check(){
     for(auto snake : snakes){
-        if(snake -> lenght == 5){
+        if(snake -> lenght == 10){
             snake -> lenght = 1;
             level ++;
             level_change = true;
@@ -233,15 +235,13 @@ void Board::game(){
     text_thanks.setPosition(window_size_x/2 - text_thanks.getGlobalBounds().width/2, 480);
 
     //show data
-//    int points1;
-
-
+    int points1, points2, lifes1, lifes2;
 
     sf::Font font;
     if(!font.loadFromFile("Padauk-Regular.ttf")){
             std::cout << "ERROR" << std::endl;
     }
-    sf::Text text_points, text_points1, text_lifes;
+    sf::Text text_points, text_points1, text_points2, text_lifes, text_lifes1, text_lifes2;
     sf::Vector2f rectanglesize(20,20);
     sf::RectangleShape rectangle1p, rectangle2p, rectangle1l, rectangle2l;
 
@@ -271,9 +271,6 @@ void Board::game(){
     rectangle2l.setSize(rectanglesize);
     rectangle2l.setFillColor(sf::Color::Blue);
 
-
-
-
     sf::Clock clock;
     srand(time(NULL));
 
@@ -282,6 +279,50 @@ void Board::game(){
 
     while (window.isOpen()) {
         set_size();
+
+        points1 = snakes[0]->lenght;
+        std::stringstream points1_stringstream;
+        points1_stringstream << points1;
+        std::string points1_string;
+        points1_stringstream >> points1_string;
+
+        text_points1.setFont(font);
+        text_points1.setString(points1_string);
+        text_points1.setCharacterSize(24);
+        text_points1.setPosition(105,610);
+
+        lifes1 = snakes[0]->lifes;
+        std::stringstream lifes1_stringstream;
+        lifes1_stringstream << lifes1;
+        std::string lifes1_string;
+        lifes1_stringstream >> lifes1_string;
+
+        text_lifes1.setFont(font);
+        text_lifes1.setString(lifes1_string);
+        text_lifes1.setCharacterSize(24);
+        text_lifes1.setPosition(340,610);
+
+        points2 = snakes[1]->lenght;
+        std::stringstream points2_stringstream;
+        points2_stringstream << points2;
+        std::string points2_string;
+        points2_stringstream >> points2_string;
+
+        text_points2.setFont(font);
+        text_points2.setString(points2_string);
+        text_points2.setCharacterSize(24);
+        text_points2.setPosition(155,610);
+
+        lifes2 = snakes[1]->lifes;
+        std::stringstream lifes2_stringstream;
+        lifes2_stringstream << lifes2;
+        std::string lifes2_string;
+        lifes2_stringstream >> lifes2_string;
+
+        text_lifes2.setFont(font);
+        text_lifes2.setString(lifes2_string);
+        text_lifes2.setCharacterSize(24);
+        text_lifes2.setPosition(390,610);
 
         sf::Vector2f SIZE(size, size);
 
@@ -304,18 +345,6 @@ void Board::game(){
         shape_rock.setFillColor(sf::Color::Yellow);
         shape_rock.setOutlineThickness(1);
         shape_rock.setOutlineColor(sf::Color::White);
-
-//        points1 = snakes[0]->lenght;
-//        std::stringstream points1_stringstream;
-//        points1_stringstream << points1;
-//        std::string points1_string;
-//        points1_stringstream >> points1_string;
-
-//        text_points1.setFont(font);
-//        text_points1.setString(points1_string);
-//        text_points1.setCharacterSize(24);
-//        text_points1.setPosition(105,610);
-
 
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -417,11 +446,23 @@ void Board::game(){
 
             window.draw(text_points);
             window.draw(text_lifes);
-            window.draw(rectangle1p);
-//            window.draw(text_points1);
-            window.draw(rectangle2p);
-            window.draw(rectangle1l);
-            window.draw(rectangle2l);
+
+            if(snakes.size() == 1){
+                window.draw(rectangle1p);
+                window.draw(text_points1);
+                window.draw(rectangle1l);
+                window.draw(text_lifes1);
+            }
+            if(snakes.size() == 2){
+                window.draw(rectangle1p);
+                window.draw(text_points1);
+                window.draw(rectangle1l);
+                window.draw(text_lifes1);
+                window.draw(rectangle2p);
+                window.draw(text_points2);
+                window.draw(rectangle2l);
+                window.draw(text_lifes2);
+            }
         }
         window.display();
     }

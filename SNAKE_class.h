@@ -35,6 +35,7 @@ public:
     int control;
     int lenght;
     int direction;
+    int lifes;
 
 private:
 
