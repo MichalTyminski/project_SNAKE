@@ -12,10 +12,10 @@ int main()
     sf::RenderWindow window(sf::VideoMode(200, 200), "SNAKE by Michal Tyminski");
 
     std::vector<Snake*> snakes;
-    Snake snake(sf::Color::Green);
+    Snake snake(sf::Color::Green, 1);
     snakes.push_back(&snake);
-    Snake snake2(sf::Color::Blue);
-    //snakes.push_back(&snake2);
+    Snake snake2(sf::Color::Blue, 2);
+    snakes.push_back(&snake2);
     Board board;
     snake.board = &board;
     snake2.board = &board;

@@ -7,9 +7,10 @@
 #include <vector>
 #include <map>
 
-Snake::Snake(sf::Color color_)
+Snake::Snake(sf::Color color_, int control_)
 {
     color = color_;
+    control = control_;
     lenght = 1;
     direction = 1;
 }
@@ -41,37 +42,6 @@ Board::~Board()
 
 }
 
-//Menu::Menu(int width, int height){
-//   if(!font.loadFromFile("C:/Users/mtymi/OneDrive/Pulpit/Studia/2 semestr/PSiO/Labolatoria/projekt_SNAKE/TTF.ttf")){
-//       std::cerr << "Could not load texture" << std::endl;
-//   }
-
-//   menu[0].setFont(font);
-//   menu[0].setColor(sf::Color::Red);
-//   menu[0].setString("PLAY");
-//   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 1));
-
-//   menu[0].setFont(font);
-//   menu[0].setColor(sf::Color::White);
-//   menu[0].setString("OPTIONS");
-//   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 2));
-
-//   menu[0].setFont(font);
-//   menu[0].setColor(sf::Color::White);
-//   menu[0].setString("EXIT");
-//   menu[0].setPosition(sf::Vector2f(width/2 , height /(MAX_NUMBER_OF_ITEMS +1) * 3));
-//}
-
-//Menu::~Menu()
-//{
-//}
-
-//void Menu::draw(sf::RenderWindow &window){
-//    for(int i = 0; i < MAX_NUMBER_OF_ITEMS; i++){
-//        window.draw(menu[i]);
-//    }
-//}
-
 void Board::set_size(){
     if(level == 1){
         size = 30;
@@ -85,16 +55,30 @@ void Board::set_size(){
     }
 }
 
-void Snake::set_direction(){
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            direction = 4;
-        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            direction = 3;
-        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            direction = 2;
-        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            direction = 1;
-        }else {}
+void Snake::set_direction(int control){
+    if(control == 1){ //sterowanie za pomoca strzalek
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                direction = 4;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+                direction = 3;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                direction = 2;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                direction = 1;
+            }else {}
+    }else if(control == 2){ //sterowanie za pomoca wasd
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+                direction = 4;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+                direction = 3;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+                direction = 2;
+            }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+                direction = 1;
+            }else {}
+    }
+
+
 }
 
 void Board::set_rock_position(){
@@ -243,7 +227,7 @@ void Board::game(){
         time_to_delay += time;
 
         for(auto snake : snakes){
-        snake -> set_direction();
+        snake -> set_direction(snake -> control);
         }
 
         sf::Event event;
