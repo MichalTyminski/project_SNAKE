@@ -2,6 +2,7 @@
 #include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
 #include <ostream>
 #include <iostream>
+#include <sstream>
 #include "SNAKE_class.h"
 #include "Board_class.h"
 #include <vector>
@@ -169,10 +170,6 @@ void Board::set_rock_position(){
     if(show_rock_time > time_delay){
         rock.x = rand() % (window_size_x/size);
         rock.y = rand() % (window_size_y/size);
-        if(rock.x == apple.x && rock.y == apple.y){
-            rock.x = rand() % (window_size_x/size);
-            rock.y = rand() % (window_size_y/size);
-        }
         position_of_rock_x.emplace_back(rock.x);
         position_of_rock_y.emplace_back(rock.y);
         show_rock_time = 0.0001;
@@ -192,7 +189,7 @@ void Board::game(){
 
     set_size();
 
-    sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y), "SNAKE by Michal Tyminski");
+    sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y+50), "SNAKE by Michal Tyminski");
 
     sf::Texture text_1, text_2, text_3, text_4, text_5;
     if (!text_1.loadFromFile("./level_complete.png"))
@@ -235,6 +232,46 @@ void Board::game(){
     text_thanks.setTexture(text_5);
     text_thanks.setPosition(window_size_x/2 - text_thanks.getGlobalBounds().width/2, 480);
 
+    //show data
+//    int points1;
+
+
+
+    sf::Font font;
+    if(!font.loadFromFile("Padauk-Regular.ttf")){
+            std::cout << "ERROR" << std::endl;
+    }
+    sf::Text text_points, text_points1, text_lifes;
+    sf::Vector2f rectanglesize(20,20);
+    sf::RectangleShape rectangle1p, rectangle2p, rectangle1l, rectangle2l;
+
+    text_points.setFont(font);
+    text_points.setString("Points: ");
+    text_points.setCharacterSize(24);
+    text_points.setPosition(5,610);
+
+    rectangle1p.setPosition(80, 615);
+    rectangle1p.setSize(rectanglesize);
+    rectangle1p.setFillColor(sf::Color::Green);
+
+    rectangle2p.setPosition(130, 615);
+    rectangle2p.setSize(rectanglesize);
+    rectangle2p.setFillColor(sf::Color::Blue);
+
+    text_lifes.setFont(font);
+    text_lifes.setString("Lifes: ");
+    text_lifes.setCharacterSize(24);
+    text_lifes.setPosition(250,610);
+
+    rectangle1l.setPosition(315, 615);
+    rectangle1l.setSize(rectanglesize);
+    rectangle1l.setFillColor(sf::Color::Green);
+
+    rectangle2l.setPosition(365, 615);
+    rectangle2l.setSize(rectanglesize);
+    rectangle2l.setFillColor(sf::Color::Blue);
+
+
 
 
     sf::Clock clock;
@@ -267,6 +304,17 @@ void Board::game(){
         shape_rock.setFillColor(sf::Color::Yellow);
         shape_rock.setOutlineThickness(1);
         shape_rock.setOutlineColor(sf::Color::White);
+
+//        points1 = snakes[0]->lenght;
+//        std::stringstream points1_stringstream;
+//        points1_stringstream << points1;
+//        std::string points1_string;
+//        points1_stringstream >> points1_string;
+
+//        text_points1.setFont(font);
+//        text_points1.setString(points1_string);
+//        text_points1.setCharacterSize(24);
+//        text_points1.setPosition(105,610);
 
 
         float time = clock.getElapsedTime().asSeconds();
@@ -366,6 +414,14 @@ void Board::game(){
                     window.draw(shape_snake);
                 }
             }
+
+            window.draw(text_points);
+            window.draw(text_lifes);
+            window.draw(rectangle1p);
+//            window.draw(text_points1);
+            window.draw(rectangle2p);
+            window.draw(rectangle1l);
+            window.draw(rectangle2l);
         }
         window.display();
     }

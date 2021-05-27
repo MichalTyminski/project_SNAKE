@@ -57,45 +57,45 @@ int main()
 
 
 
-    if (event.type == sf::Event::MouseButtonPressed) {
-        if(event.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-            if(mouse_position.x > text_1player.getGlobalBounds().left && mouse_position.x < text_1player.getGlobalBounds().left + text_1player.getGlobalBounds().width){
-                if(mouse_position.y > text_1player.getGlobalBounds().top && mouse_position.y < text_1player.getGlobalBounds().top + text_1player.getGlobalBounds().height){
-                    std::vector<Snake*> snakes;
-                    Snake snake(sf::Color::Green, 1);
-                    snakes.push_back(&snake);
-                    Board board;
-                    snake.board = &board;
-                    board.snakes = snakes;
-                    window.close();
-                    board.game();
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if(event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                if(mouse_position.x > text_1player.getGlobalBounds().left && mouse_position.x < text_1player.getGlobalBounds().left + text_1player.getGlobalBounds().width){
+                    if(mouse_position.y > text_1player.getGlobalBounds().top && mouse_position.y < text_1player.getGlobalBounds().top + text_1player.getGlobalBounds().height){
+                        std::vector<Snake*> snakes;
+                        Snake snake(sf::Color::Green, 1);
+                        snakes.push_back(&snake);
+                        Board board;
+                        snake.board = &board;
+                        board.snakes = snakes;
+                        window.close();
+                        board.game();
+                    }
                 }
-            }
-            if(mouse_position.x > text_2players.getGlobalBounds().left && mouse_position.x < text_2players.getGlobalBounds().left + text_2players.getGlobalBounds().width){
-                if(mouse_position.y > text_2players.getGlobalBounds().top && mouse_position.y < text_2players.getGlobalBounds().top + text_2players.getGlobalBounds().height){
-                    std::vector<Snake*> snakes;
-                    Snake snake(sf::Color::Green, 1);
-                    snakes.push_back(&snake);
-                    Snake snake2(sf::Color::Blue, 2);
-                    snakes.push_back(&snake2);
-                    Board board;
-                    snake.board = &board;
-                    snake2.board = &board;
-                    board.snakes = snakes;
-                    window.close();
-                    board.game();
+                if(mouse_position.x > text_2players.getGlobalBounds().left && mouse_position.x < text_2players.getGlobalBounds().left + text_2players.getGlobalBounds().width){
+                    if(mouse_position.y > text_2players.getGlobalBounds().top && mouse_position.y < text_2players.getGlobalBounds().top + text_2players.getGlobalBounds().height){
+                        std::vector<Snake*> snakes;
+                        Snake snake(sf::Color::Green, 1);
+                        snakes.push_back(&snake);
+                        Snake snake2(sf::Color::Blue, 2);
+                        snakes.push_back(&snake2);
+                        Board board;
+                        snake.board = &board;
+                        snake2.board = &board;
+                        board.snakes = snakes;
+                        window.close();
+                        board.game();
 
+                    }
                 }
             }
         }
-    }
 
-    window.draw(text_welcome);
-    window.draw(text_number);
-    window.draw(text_1player);
-    window.draw(text_2players);
-    window.display();
-}
+        window.draw(text_welcome);
+        window.draw(text_number);
+        window.draw(text_1player);
+        window.draw(text_2players);
+        window.display();
+    }
     return 0;
 }

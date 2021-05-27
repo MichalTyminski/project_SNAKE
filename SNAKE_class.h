@@ -27,7 +27,7 @@ public:
     void crash_with_rock();
     void feed_me();
     void suicide();
-//    void snakes_collision(int number_of_snakes, int lenght);
+    //    void snakes_collision(int number_of_snakes, int lenght);
     void through_walls();
     Board *board;
 
@@ -38,17 +38,5 @@ public:
 
 private:
 
-
 };
-
-
-
-
-
-
-
-
-
-
-//<a href="http://www.onlinewebfonts.com">oNline Web Fonts</a>
 #endif // SNAKE_CLASS_H

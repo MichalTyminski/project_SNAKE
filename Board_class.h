@@ -28,8 +28,6 @@ public:
         int y;
     }rock;
 
-
-
     void set_size();
     void level_check();
     void set_rock_position();
