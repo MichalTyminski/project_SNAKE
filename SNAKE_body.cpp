@@ -31,6 +31,7 @@ Board::Board(){
     show_rock_time_variable = 0.0001;
     level = 1;
     level_change = false;
+    every_snake_is_alive = true;
 
     apple.x = rand() % window_size_x/size;
     apple.y = rand() % window_size_y/size;
@@ -141,7 +142,7 @@ void Snake::through_walls(){
     }
 
     if(ssnake[0].y < 0){
-        ssnake[0].y = board -> window_size_y/board -> size;
+        ssnake[0].y = (board -> window_size_y/board -> size)-1;
     }
 }
 
@@ -193,7 +194,7 @@ void Board::game(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y+50), "SNAKE by Michal Tyminski");
 
-    sf::Texture text_1, text_2, text_3, text_4, text_5;
+    sf::Texture text_1, text_2, text_3, text_4, text_5, text_6;
     if (!text_1.loadFromFile("./level_complete.png"))
     {
         std::cout << "ERROR" << std::endl;
@@ -233,6 +234,16 @@ void Board::game(){
     sf::Sprite text_thanks;
     text_thanks.setTexture(text_5);
     text_thanks.setPosition(window_size_x/2 - text_thanks.getGlobalBounds().width/2, 480);
+
+    if (!text_6.loadFromFile("./gameover.png"))
+    {
+        std::cout << "ERROR" << std::endl;
+    }
+    sf::Sprite text_gameover;
+    text_gameover.setTexture(text_6);
+    text_gameover.setPosition(window_size_x/2 - text_gameover.getGlobalBounds().width/2, 100);
+
+
 
     //show data
     int points1, points2, lifes1, lifes2;
@@ -366,7 +377,27 @@ void Board::game(){
 
         window.clear(sf::Color::Black);
 
-        if(level_change && level == 4){
+        for(auto snake : snakes){
+            if(snake->lifes < 0){
+                every_snake_is_alive = false;
+            }
+        }
+
+        if(!every_snake_is_alive){
+            level = 1;
+            window.draw(text_gameover);
+            window.draw(text_exit);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width){
+                        if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+                            window.close();
+                        }
+                    }
+                }
+            }
+        }else if(level_change && level == 4){
             window.draw(text_win);
             window.draw(text_exit);
             window.draw(text_thanks);
@@ -380,7 +411,6 @@ void Board::game(){
                     }
                 }
             }
-
         }else if(level_change){
             window.draw(text_level_complete);
             window.draw(text_contiune);
@@ -413,13 +443,9 @@ void Board::game(){
                     snake -> feed_me();
                     snake -> suicide();
                     snake -> through_walls();
-                    //                if(snakes.size() != 1){
-                    //                    snake -> snakes_collision(snakes.size(), snake -> lenght);
-                    //                }
                 }
                 level_check();
             }
-
 
             for(int i = 0; i < window_size_x/size; i++){ // drawing background
                 for (int j = 0; j < window_size_y/size; j++){

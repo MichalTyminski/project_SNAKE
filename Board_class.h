@@ -46,6 +46,7 @@ public:
     float show_rock_time_variable;
     std::vector<Snake*> snakes;
     bool level_change;
+    bool every_snake_is_alive;
 
 private:
 
