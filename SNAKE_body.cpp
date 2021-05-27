@@ -169,6 +169,10 @@ void Board::set_rock_position(){
     if(show_rock_time > time_delay){
         rock.x = rand() % (window_size_x/size);
         rock.y = rand() % (window_size_y/size);
+        if(rock.x == apple.x && rock.y == apple.y){
+            rock.x = rand() % (window_size_x/size);
+            rock.y = rand() % (window_size_y/size);
+        }
         position_of_rock_x.emplace_back(rock.x);
         position_of_rock_y.emplace_back(rock.y);
         show_rock_time = 0.0001;
@@ -190,7 +194,7 @@ void Board::game(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y), "SNAKE by Michal Tyminski");
 
-    sf::Texture text_1, text_2, text_3, text_4;
+    sf::Texture text_1, text_2, text_3, text_4, text_5;
     if (!text_1.loadFromFile("./level_complete.png"))
     {
         std::cout << "ERROR" << std::endl;
@@ -222,6 +226,14 @@ void Board::game(){
     sf::Sprite text_win;
     text_win.setTexture(text_4);
     text_win.setPosition(window_size_x/2 - text_win.getGlobalBounds().width/2, 100);
+
+    if (!text_5.loadFromFile("./thanks.png"))
+    {
+        std::cout << "ERROR" << std::endl;
+    }
+    sf::Sprite text_thanks;
+    text_thanks.setTexture(text_5);
+    text_thanks.setPosition(window_size_x/2 - text_thanks.getGlobalBounds().width/2, 480);
 
 
 
@@ -280,6 +292,7 @@ void Board::game(){
         if(level_change && level == 4){
             window.draw(text_win);
             window.draw(text_exit);
+            window.draw(text_thanks);
             if (event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
