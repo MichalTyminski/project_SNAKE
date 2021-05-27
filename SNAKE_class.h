@@ -21,19 +21,18 @@ public:
         int y;
     }ssnake[100];
 
-
-
-    sf::Color color;
-    int control;
     void set_direction(int control);
     void snake_move();
     void snake_direction();
     void crash_with_rock();
     void feed_me();
     void suicide();
+//    void snakes_collision(int number_of_snakes, int lenght);
     void through_walls();
     Board *board;
 
+    sf::Color color;
+    int control;
     int lenght;
     int direction;
 

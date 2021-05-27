@@ -29,11 +29,12 @@ public:
     }rock;
 
 
-    void game();
+
     void set_size();
     void level_check();
     void set_rock_position();
     void apple__rock();
+    void game();
 
     int size;
     int level;
