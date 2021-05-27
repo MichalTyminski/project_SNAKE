@@ -357,4 +357,3 @@ void Board::game(){
         window.display();
     }
 }
-
