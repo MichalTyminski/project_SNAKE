@@ -243,13 +243,17 @@ void Board::game(){
     text_gameover.setTexture(text_6);
     text_gameover.setPosition(window_size_x/2 - text_gameover.getGlobalBounds().width/2, 100);
 
-    sf::Texture snake_, snake2_;
+    sf::Texture snake_, snake2_, rock_;
 
     if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
         std::cerr << "Could not load texture" << std::endl;
     }
 
     if (!snake2_.loadFromFile("./snakeskin.jpg")) {
+        std::cerr << "Could not load texture" << std::endl;
+    }
+
+    if (!rock_.loadFromFile("./rock.png")) {
         std::cerr << "Could not load texture" << std::endl;
     }
 
@@ -359,8 +363,8 @@ void Board::game(){
         shape_apple.setOutlineThickness(1);
         shape_apple.setOutlineColor(sf::Color::White);
 
+        shape_rock.setTexture(&rock_);
         shape_rock.setSize(SIZE);
-        shape_rock.setFillColor(sf::Color::Yellow);
         shape_rock.setOutlineThickness(1);
         shape_rock.setOutlineColor(sf::Color::White);
 
