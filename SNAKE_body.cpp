@@ -24,6 +24,7 @@ Snake::~Snake()
 
 Board::Board(){
     size = 30;
+    fallen = 0;
     window_size_x = 600;
     window_size_y = 600;
     time_to_delay = 0;
@@ -281,9 +282,9 @@ void Board::game(){
     if(!font.loadFromFile("Padauk-Regular.ttf")){
             std::cout << "ERROR" << std::endl;
     }
-    sf::Text text_points, text_points1, text_points2, text_lifes, text_lifes1, text_lifes2;
+    sf::Text text_points, text_points1, text_points2, text_lifes, text_lifes1, text_lifes2, gameover_youlost;
     sf::Vector2f rectanglesize(20,20);
-    sf::RectangleShape rectangle1p, rectangle2p, rectangle1l, rectangle2l;
+    sf::RectangleShape rectangle1p, rectangle2p, rectangle1l, rectangle2l, gameover_snake1, gameover_snake2;
 
     text_points.setFont(font);
     text_points.setString("Points: ");
@@ -310,6 +311,21 @@ void Board::game(){
     rectangle2l.setPosition(365, 615);
     rectangle2l.setSize(rectanglesize);
     rectangle2l.setTexture(&snake2_);
+
+    gameover_youlost.setFont(font);
+    gameover_youlost.setString("You lost becouse snake     died");
+    gameover_youlost.setCharacterSize(24);
+    gameover_youlost.setPosition(window_size_x/2 - gameover_youlost.getGlobalBounds().width/2, 280);
+
+    gameover_snake1.setPosition(385, 285);
+    gameover_snake1.setSize(rectanglesize);
+    gameover_snake1.setTexture(&snake_);
+
+    gameover_snake2.setPosition(385, 285);
+    gameover_snake2.setSize(rectanglesize);
+    gameover_snake2.setTexture(&snake2_);
+
+
 
     sf::Clock clock;
     srand(time(NULL));
@@ -392,7 +408,6 @@ void Board::game(){
         clock.restart();
         time_to_delay += time;
         time_to_colison += time;
-        std::cout << time_to_colison << std::endl;
 
         for(auto snake : snakes){
             snake -> set_direction(snake -> control);
@@ -408,9 +423,10 @@ void Board::game(){
 
         window.clear(sf::Color::Black);
 
-        for(auto snake : snakes){
-            if(snake->lifes < 0){
+        for(unsigned long long i = 0; i < snakes.size(); i++){
+            if(snakes[i]->lifes < 0){
                 every_snake_is_alive = false;
+                fallen = i;
             }
         }
 
@@ -418,6 +434,15 @@ void Board::game(){
             level = 1;
             window.draw(text_gameover);
             window.draw(text_exit);
+
+            if(snakes.size() != 1){
+                window.draw(gameover_youlost);
+                if(fallen == 0){
+                    window.draw(gameover_snake1);
+                }else if(fallen == 1){
+                    window.draw(gameover_snake2);
+                }
+            }
             if (event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));

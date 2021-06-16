@@ -49,6 +49,7 @@ public:
     std::vector<Snake*> snakes;
     bool level_change;
     bool every_snake_is_alive;
+    int fallen;
 
 private:
 
