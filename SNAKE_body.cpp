@@ -8,9 +8,9 @@
 #include <vector>
 #include <map>
 
-Snake::Snake(sf::Color color_, int control_)
+Snake::Snake(sf::Texture texture_, int control_)
 {
-    color = color_;
+    snake_texture = texture_;
     control = control_;
     lenght = 1;
     direction = 1;
@@ -161,7 +161,7 @@ void Board::set_size(){
 
 void Board::level_check(){
     for(auto snake : snakes){
-        if(snake -> lenght == 10){
+        if(snake -> lenght == 5){
             snake -> lenght = 1;
             level ++;
             level_change = true;
@@ -243,7 +243,15 @@ void Board::game(){
     text_gameover.setTexture(text_6);
     text_gameover.setPosition(window_size_x/2 - text_gameover.getGlobalBounds().width/2, 100);
 
+    sf::Texture snake_, snake2_;
 
+    if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
+        std::cerr << "Could not load texture" << std::endl;
+    }
+
+    if (!snake2_.loadFromFile("./snakeskin.jpg")) {
+        std::cerr << "Could not load texture" << std::endl;
+    }
 
     //show data
     int points1, points2, lifes1, lifes2;
@@ -263,11 +271,11 @@ void Board::game(){
 
     rectangle1p.setPosition(80, 615);
     rectangle1p.setSize(rectanglesize);
-    rectangle1p.setFillColor(sf::Color::Green);
+    rectangle1p.setTexture(&snake_);
 
     rectangle2p.setPosition(130, 615);
     rectangle2p.setSize(rectanglesize);
-    rectangle2p.setFillColor(sf::Color::Blue);
+    rectangle2p.setTexture(&snake2_);
 
     text_lifes.setFont(font);
     text_lifes.setString("Lifes: ");
@@ -276,11 +284,11 @@ void Board::game(){
 
     rectangle1l.setPosition(315, 615);
     rectangle1l.setSize(rectanglesize);
-    rectangle1l.setFillColor(sf::Color::Green);
+    rectangle1l.setTexture(&snake_);
 
     rectangle2l.setPosition(365, 615);
     rectangle2l.setSize(rectanglesize);
-    rectangle2l.setFillColor(sf::Color::Blue);
+    rectangle2l.setTexture(&snake2_);
 
     sf::Clock clock;
     srand(time(NULL));
@@ -343,7 +351,6 @@ void Board::game(){
         background.setOutlineColor(sf::Color::White);
 
         shape_snake.setSize(SIZE);
-        shape_snake.setFillColor(sf::Color::Green);
         shape_snake.setOutlineThickness(1);
         shape_snake.setOutlineColor(sf::Color::White);
 
@@ -436,6 +443,7 @@ void Board::game(){
                 set_size();
                 time_to_delay = 0;
                 set_rock_position();
+
                 for(auto snake : snakes){
                     snake -> snake_move();
                     snake -> snake_direction();
@@ -463,7 +471,7 @@ void Board::game(){
             }
 
             for(auto snake : snakes){
-                shape_snake.setFillColor(snake->color);
+                  shape_snake.setTexture(&snake->snake_texture);
                 for(int i = 0; i < snake -> lenght; i++){ // drawing snake
                     shape_snake.setPosition(snake -> ssnake[i].x * size, snake -> ssnake[i].y * size);
                     window.draw(shape_snake);

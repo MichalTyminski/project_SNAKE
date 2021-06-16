@@ -12,7 +12,7 @@ class Board;
 
 class Snake : public sf::RectangleShape{
 public:
-    Snake(sf::Color, int control);
+    Snake(sf::Texture texture, int control);
     virtual ~Snake();
 
     struct StructSnake
@@ -31,7 +31,7 @@ public:
     void through_walls();
     Board *board;
 
-    sf::Color color;
+    sf::Texture snake_texture;
     int control;
     int lenght;
     int direction;

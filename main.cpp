@@ -46,6 +46,18 @@ int main()
     text_2players.setTexture(text_3);
     text_2players.setPosition(350, 300);
 
+    sf::Texture snake_, snake2_;
+
+    if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
+        std::cerr << "Could not load texture" << std::endl;
+        return 1;
+    }
+
+    if (!snake2_.loadFromFile("./snakeskin.jpg")) {
+        std::cerr << "Could not load texture" << std::endl;
+        return 1;
+    }
+
     while (window.isOpen()) {
 
         while (window.pollEvent(event)) {
@@ -55,15 +67,13 @@ int main()
 
         window.clear(sf::Color::Black);
 
-
-
         if (event.type == sf::Event::MouseButtonPressed) {
             if(event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                 if(mouse_position.x > text_1player.getGlobalBounds().left && mouse_position.x < text_1player.getGlobalBounds().left + text_1player.getGlobalBounds().width){
                     if(mouse_position.y > text_1player.getGlobalBounds().top && mouse_position.y < text_1player.getGlobalBounds().top + text_1player.getGlobalBounds().height){
                         std::vector<Snake*> snakes;
-                        Snake snake(sf::Color::Green, 1);
+                        Snake snake(snake_, 1);
                         snakes.push_back(&snake);
                         Board board;
                         snake.board = &board;
@@ -75,9 +85,9 @@ int main()
                 if(mouse_position.x > text_2players.getGlobalBounds().left && mouse_position.x < text_2players.getGlobalBounds().left + text_2players.getGlobalBounds().width){
                     if(mouse_position.y > text_2players.getGlobalBounds().top && mouse_position.y < text_2players.getGlobalBounds().top + text_2players.getGlobalBounds().height){
                         std::vector<Snake*> snakes;
-                        Snake snake(sf::Color::Green, 1);
+                        Snake snake(snake_, 1);
                         snakes.push_back(&snake);
-                        Snake snake2(sf::Color::Blue, 2);
+                        Snake snake2(snake2_, 2);
                         snakes.push_back(&snake2);
                         Board board;
                         snake.board = &board;
@@ -85,7 +95,6 @@ int main()
                         board.snakes = snakes;
                         window.close();
                         board.game();
-
                     }
                 }
             }
@@ -99,3 +108,6 @@ int main()
     }
     return 0;
 }
+
+
+// https://www.sharetextures.com/textures/animals/snake_skin/ <- miejsce skąd pobrałem tekstury
