@@ -27,7 +27,7 @@ public:
     void crash_with_rock();
     void feed_me();
     void suicide();
-    //    void snakes_collision(int number_of_snakes, int lenght);
+    void snakes_collision();
     void through_walls();
     Board *board;
 
@@ -36,6 +36,7 @@ public:
     int lenght;
     int direction;
     int lifes;
+    bool direction_changed;
 
 private:
 

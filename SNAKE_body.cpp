@@ -15,6 +15,7 @@ Snake::Snake(sf::Texture texture_, int control_)
     lenght = 1;
     direction = 1;
     lifes = 3;
+    direction_changed = false;
 }
 
 Snake::~Snake()
@@ -27,6 +28,8 @@ Board::Board(){
     window_size_y = 600;
     time_to_delay = 0;
     time_delay = 0.1;
+    time_between_colision = 1;
+    time_to_colison = 0;
     show_rock_time = 0.0001;
     show_rock_time_variable = 0.0001;
     level = 1;
@@ -48,22 +51,30 @@ void Snake::set_direction(int control){
     if(control == 1){ //sterowanie za pomoca strzalek
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             direction = 4;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             direction = 3;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             direction = 2;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             direction = 1;
+            direction_changed = true;
         }else {}
     }else if(control == 2){ //sterowanie za pomoca wasd
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
             direction = 4;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             direction = 3;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             direction = 2;
+            direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             direction = 1;
+            direction_changed = true;
         }else {}
     }
 }
@@ -114,19 +125,21 @@ void Snake::suicide(){
     }
 }
 
-//void Snake::snakes_collision(int number_of_snakes, int lenght){
-//    std::vector<Snake*> snakes_;
-//    for(auto snake : board -> snakes){
-//        snakes_.push_back(snake);
-//    }
-//    for(int i = 0; i = number_of_snakes; i++){
-//        for(int j = 0; j = lenght; j++){
-//            if(snakes_[i]->ssnake[0].x == snakes_[i+1]->ssnake[j].x && snakes_[i]->ssnake[0].y == snakes_[i+1]->ssnake[j].y){
-//                snakes_[i]->lenght = 1;
-//            }
-//        }
-//    }
-//}
+void Snake::snakes_collision(){
+    for(unsigned long long i = 0; i < board -> snakes.size(); i++){
+        for(unsigned long long j = 0; j < board -> snakes.size(); j++){
+            if(board -> snakes[0]->ssnake[i].x == board -> snakes[1]->ssnake[j].x &&
+                    board -> snakes[0]->ssnake[i].y == board -> snakes[1]->ssnake[j].y){
+                for(auto snake : board -> snakes){
+                    snake->lifes --;
+                    snake->lenght = 1;
+                    board -> time_to_colison = 0;
+                }
+            }
+        }
+    }
+}
+
 
 void Snake::through_walls(){
     if(ssnake[0].x >= board -> window_size_x/board -> size){
@@ -303,6 +316,22 @@ void Board::game(){
 
     sf::RectangleShape background, shape_snake, shape_apple, shape_rock;
 
+    background.setFillColor(sf::Color::Black);
+    background.setOutlineThickness(1);
+    background.setOutlineColor(sf::Color::White);
+
+    shape_snake.setOutlineThickness(1);
+    shape_snake.setOutlineColor(sf::Color::White);
+
+    shape_apple.setTexture(&apple_);
+    shape_apple.setOutlineThickness(1);
+    shape_apple.setOutlineColor(sf::Color::White);
+
+    shape_rock.setTexture(&rock_);
+    shape_rock.setOutlineThickness(1);
+    shape_rock.setOutlineColor(sf::Color::White);
+
+
 
     while (window.isOpen()) {
         set_size();
@@ -354,27 +383,16 @@ void Board::game(){
         sf::Vector2f SIZE(size, size);
 
         background.setSize(SIZE);
-        background.setFillColor(sf::Color::Black);
-        background.setOutlineThickness(1);
-        background.setOutlineColor(sf::Color::White);
-
         shape_snake.setSize(SIZE);
-        shape_snake.setOutlineThickness(1);
-        shape_snake.setOutlineColor(sf::Color::White);
-
         shape_apple.setSize(SIZE);
-        shape_apple.setTexture(&apple_);
-        shape_apple.setOutlineThickness(1);
-        shape_apple.setOutlineColor(sf::Color::White);
-
         shape_rock.setSize(SIZE);
-        shape_rock.setTexture(&rock_);
-        shape_rock.setOutlineThickness(1);
-        shape_rock.setOutlineColor(sf::Color::White);
 
         float time = clock.getElapsedTime().asSeconds();
+
         clock.restart();
         time_to_delay += time;
+        time_to_colison += time;
+        std::cout << time_to_colison << std::endl;
 
         for(auto snake : snakes){
             snake -> set_direction(snake -> control);
@@ -387,8 +405,6 @@ void Board::game(){
         }
 
         show_rock_time += show_rock_time_variable;
-
-
 
         window.clear(sf::Color::Black);
 
@@ -459,6 +475,9 @@ void Board::game(){
                     snake -> feed_me();
                     snake -> suicide();
                     snake -> through_walls();
+                    if(snake -> direction_changed && time_between_colision < time_to_colison){
+                    snake -> snakes_collision();
+                    }
                 }
                 level_check();
             }
@@ -485,6 +504,8 @@ void Board::game(){
                     window.draw(shape_snake);
                 }
             }
+
+
 
             window.draw(text_points);
             window.draw(text_lifes);

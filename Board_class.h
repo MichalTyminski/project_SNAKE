@@ -42,6 +42,8 @@ public:
     std::vector<int> position_of_rock_y;
     float time_to_delay;
     float time_delay;
+    float time_between_colision;
+    float time_to_colison;
     float show_rock_time;
     float show_rock_time_variable;
     std::vector<Snake*> snakes;
