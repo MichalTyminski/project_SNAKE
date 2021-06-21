@@ -28,6 +28,12 @@ public:
         int y;
     }rock;
 
+    struct StruckBonus
+    {
+        int x;
+        int y;
+    }bonus;
+
     void set_size();
     void level_check();
     void set_rock_position();
@@ -46,6 +52,8 @@ public:
     float time_to_colison;
     float show_rock_time;
     float show_rock_time_variable;
+    float show_bonus_time;
+    float show_bonus_time_variable;
     std::vector<Snake*> snakes;
     bool level_change;
     bool every_snake_is_alive;

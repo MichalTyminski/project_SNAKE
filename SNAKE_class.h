@@ -29,6 +29,7 @@ public:
     void suicide();
     void snakes_collision();
     void through_walls();
+    void get_bonus();
     Board *board;
 
     sf::Texture snake_texture;

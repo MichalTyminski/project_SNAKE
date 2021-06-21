@@ -33,6 +33,8 @@ Board::Board(){
     time_to_colison = 0;
     show_rock_time = 0.0001;
     show_rock_time_variable = 0.0001;
+    show_bonus_time = 0.0001;
+    show_bonus_time_variable = 0.01;
     level = 1;
     level_change = false;
     every_snake_is_alive = true;
@@ -42,6 +44,9 @@ Board::Board(){
 
     rock.x = rand() % window_size_x/size;
     rock.y = rand() % window_size_y/size;
+
+    bonus.x = rand() % window_size_x/size;
+    bonus.y = rand() % window_size_y/size;
 }
 
 Board::~Board()
@@ -75,6 +80,34 @@ void Snake::set_direction(int control){
             direction_changed = true;
         }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             direction = 1;
+            direction_changed = true;
+        }else {}
+    }else if(control == 3){ //sterowanie za pomoca strzalek (odwrocone)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            direction = 3;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            direction = 4;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            direction = 1;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            direction = 2;
+            direction_changed = true;
+        }else {}
+    }else if(control == 4){ //sterowanie za pomoca wasd (odwrocone)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            direction = 3;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            direction = 4;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            direction = 1;
+            direction_changed = true;
+        }else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            direction = 2;
             direction_changed = true;
         }else {}
     }
@@ -126,6 +159,35 @@ void Snake::suicide(){
     }
 }
 
+void Snake::get_bonus(){
+    int surprise = 0;
+    if(ssnake[0].x == board -> bonus.x && ssnake[0].y == board -> bonus.y && board -> show_bonus_time > 0.5){
+        surprise = rand() % 4;
+
+        if(surprise == 0){ // dodanie 3 punktow zycia
+            lifes = lifes + 3;
+        }else if(surprise == 1){ // dodanie 5 punktow (dlugosci)
+            lenght = lenght + 5;
+        }else if(surprise == 2){ // zmiana sterowania
+            if(control == 1){
+                control = 3;
+            }else if(control == 2){
+                control = 4;
+            }else if(control == 3){
+                control = 1;
+            }else if(control == 4){
+                control = 2;
+            }
+        }else if(surprise == 3 && lenght > 1){ // odjecie po 1 pkt zycia i dlugosci
+            lifes --;
+            lenght --;
+        }
+        board -> bonus.x = rand() % board -> window_size_x/board -> size;
+        board -> bonus.y = rand() % board -> window_size_y/board -> size;
+        board -> show_bonus_time = 0.0001;
+    }
+}
+
 void Snake::snakes_collision(){
     for(unsigned long long i = 0; i < board -> snakes.size(); i++){
         for(unsigned long long j = 0; j < board -> snakes.size(); j++){
@@ -164,18 +226,21 @@ void Board::set_size(){
     if(level == 1){
         size = 30;
         show_rock_time_variable = 0.0001;
+        show_bonus_time_variable = 0.0001;
     }else if(level == 2){
         size = 25;
         show_rock_time_variable = 0.0005;
+        show_bonus_time_variable = 0.0001;
     }else if(level == 3){
         size = 20;
         show_rock_time_variable = 0.001;
+        show_bonus_time_variable = 0.0001;
     }
 }
 
 void Board::level_check(){
     for(auto snake : snakes){
-        if(snake -> lenght == 5){
+        if(snake -> lenght >= 10){
             snake -> lenght = 1;
             level ++;
             level_change = true;
@@ -187,6 +252,10 @@ void Board::set_rock_position(){
     if(show_rock_time > time_delay){
         rock.x = rand() % (window_size_x/size);
         rock.y = rand() % (window_size_y/size);
+        if(rock.x == apple.x && rock.y == apple.y){
+            rock.x = rand() % (window_size_x/size);
+            rock.y = rand() % (window_size_y/size);
+        }
         position_of_rock_x.emplace_back(rock.x);
         position_of_rock_y.emplace_back(rock.y);
         show_rock_time = 0.0001;
@@ -195,7 +264,8 @@ void Board::set_rock_position(){
 
 void Board::apple__rock(){
     for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){
-        if(apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i]){
+        if((apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i])
+                || (apple.x == bonus.x && apple.y == bonus.y)){
             apple.x = rand() % window_size_x/size;
             apple.y = rand() % window_size_y/size;
         }
@@ -257,7 +327,7 @@ void Board::game(){
     text_gameover.setTexture(text_6);
     text_gameover.setPosition(window_size_x/2 - text_gameover.getGlobalBounds().width/2, 100);
 
-    sf::Texture snake_, snake2_, rock_, apple_;
+    sf::Texture snake_, snake2_, rock_, apple_, bonus_;
 
     if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
         std::cerr << "Could not load texture" << std::endl;
@@ -272,6 +342,10 @@ void Board::game(){
     }
 
     if (!apple_.loadFromFile("./apple.jfif")) {
+        std::cerr << "Could not load texture" << std::endl;
+    }
+
+    if (!bonus_.loadFromFile("./bonus.png")) {
         std::cerr << "Could not load texture" << std::endl;
     }
 
@@ -330,7 +404,7 @@ void Board::game(){
     sf::Clock clock;
     srand(time(NULL));
 
-    sf::RectangleShape background, shape_snake, shape_apple, shape_rock;
+    sf::RectangleShape background, shape_snake, shape_apple, shape_rock, shape_bonus;
 
     background.setFillColor(sf::Color::Black);
     background.setOutlineThickness(1);
@@ -346,6 +420,10 @@ void Board::game(){
     shape_rock.setTexture(&rock_);
     shape_rock.setOutlineThickness(1);
     shape_rock.setOutlineColor(sf::Color::White);
+
+    shape_bonus.setTexture(&bonus_);
+    shape_bonus.setOutlineThickness(1);
+    shape_bonus.setOutlineColor(sf::Color::White);
 
 
 
@@ -402,6 +480,7 @@ void Board::game(){
         shape_snake.setSize(SIZE);
         shape_apple.setSize(SIZE);
         shape_rock.setSize(SIZE);
+        shape_bonus.setSize(SIZE);
 
         float time = clock.getElapsedTime().asSeconds();
 
@@ -420,6 +499,7 @@ void Board::game(){
         }
 
         show_rock_time += show_rock_time_variable;
+        show_bonus_time += show_bonus_time_variable;
 
         window.clear(sf::Color::Black);
 
@@ -434,7 +514,6 @@ void Board::game(){
             level = 1;
             window.draw(text_gameover);
             window.draw(text_exit);
-
             if(snakes.size() != 1){
                 window.draw(gameover_youlost);
                 if(fallen == 0){
@@ -500,6 +579,7 @@ void Board::game(){
                     snake -> feed_me();
                     snake -> suicide();
                     snake -> through_walls();
+                    snake -> get_bonus();
                     if(snake -> direction_changed && time_between_colision < time_to_colison){
                     snake -> snakes_collision();
                     }
@@ -520,6 +600,11 @@ void Board::game(){
             for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){ // drawing rocks
                 shape_rock.setPosition(position_of_rock_x[i] * size, position_of_rock_y[i] * size);
                 window.draw(shape_rock);
+            }
+
+            if(show_bonus_time > 0.5){
+            shape_bonus.setPosition(bonus.x * size, bonus.y * size); // drawing bonus
+            window.draw(shape_bonus);
             }
 
             for(auto snake : snakes){
