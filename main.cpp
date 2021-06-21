@@ -109,5 +109,4 @@ int main()
     return 0;
 }
 
-
 // https://www.sharetextures.com/textures/animals/snake_skin/ <- miejsce skąd pobrałem tekstury

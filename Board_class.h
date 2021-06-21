@@ -39,6 +39,7 @@ public:
     void set_rock_position();
     void apple__rock();
     void game();
+    void read_from_file();
 
     int size;
     int level;
@@ -58,8 +59,9 @@ public:
     bool level_change;
     bool every_snake_is_alive;
     int fallen;
+    float variable_of_speed;
+    float constant_of_speed;
 
 private:
-
 };
 #endif // BOARD_CLASS_H

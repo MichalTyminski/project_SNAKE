@@ -36,10 +36,9 @@ public:
     int control;
     int lenght;
     int direction;
-    int lifes;
+    float lifes;
     bool direction_changed;
 
 private:
-
 };
 #endif // SNAKE_CLASS_H

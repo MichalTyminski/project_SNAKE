@@ -7,6 +7,7 @@
 #include "Board_class.h"
 #include <vector>
 #include <map>
+#include <fstream>
 
 Snake::Snake(sf::Texture texture_, int control_)
 {
@@ -31,10 +32,12 @@ Board::Board(){
     time_delay = 0.1;
     time_between_colision = 1;
     time_to_colison = 0;
-    show_rock_time = 0.0001;
+    show_rock_time = 0;
     show_rock_time_variable = 0.0001;
-    show_bonus_time = 0.0001;
-    show_bonus_time_variable = 0.01;
+    show_bonus_time = 0;
+    show_bonus_time_variable = 0;
+    variable_of_speed = 0;
+    constant_of_speed = 10;
     level = 1;
     level_change = false;
     every_snake_is_alive = true;
@@ -184,7 +187,7 @@ void Snake::get_bonus(){
         }
         board -> bonus.x = rand() % board -> window_size_x/board -> size;
         board -> bonus.y = rand() % board -> window_size_y/board -> size;
-        board -> show_bonus_time = 0.0001;
+        board -> show_bonus_time = 0;
     }
 }
 
@@ -226,15 +229,12 @@ void Board::set_size(){
     if(level == 1){
         size = 30;
         show_rock_time_variable = 0.0001;
-        show_bonus_time_variable = 0.0001;
     }else if(level == 2){
         size = 25;
         show_rock_time_variable = 0.0005;
-        show_bonus_time_variable = 0.0001;
     }else if(level == 3){
         size = 20;
         show_rock_time_variable = 0.001;
-        show_bonus_time_variable = 0.0001;
     }
 }
 
@@ -272,8 +272,33 @@ void Board::apple__rock(){
     }
 }
 
-void Board::game(){
+void Board::read_from_file(){
+    std::string linia;
+    std::fstream plik;
+    int count = 0;
+    std::vector<float> dane;
 
+    plik.open("./parametry.txt", std::ios::in);
+    while(!plik.eof()){
+        count ++;
+        getline(plik, linia);
+        std::cout << linia << std::endl;
+        if(count%2 == 0){
+            float linia_float = std::stof(linia);
+            dane.push_back(linia_float);
+        }
+    }
+    plik.close();
+
+    variable_of_speed = dane[0];
+    show_bonus_time_variable = dane[1];
+    for(auto snake : snakes){
+        snake->lifes = dane[2];
+    }
+}
+
+void Board::game(){
+    read_from_file();
     set_size();
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y+50), "SNAKE by Michal Tyminski");
@@ -354,7 +379,7 @@ void Board::game(){
 
     sf::Font font;
     if(!font.loadFromFile("Padauk-Regular.ttf")){
-            std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR" << std::endl;
     }
     sf::Text text_points, text_points1, text_points2, text_lifes, text_lifes1, text_lifes2, gameover_youlost;
     sf::Vector2f rectanglesize(20,20);
@@ -399,8 +424,6 @@ void Board::game(){
     gameover_snake2.setSize(rectanglesize);
     gameover_snake2.setTexture(&snake2_);
 
-
-
     sf::Clock clock;
     srand(time(NULL));
 
@@ -425,10 +448,11 @@ void Board::game(){
     shape_bonus.setOutlineThickness(1);
     shape_bonus.setOutlineColor(sf::Color::White);
 
-
+    window.setFramerateLimit(60);
 
     while (window.isOpen()) {
         set_size();
+        variable_of_speed ++;
 
         points1 = snakes[0]->lenght;
         std::stringstream points1_stringstream;
@@ -569,22 +593,25 @@ void Board::game(){
             if(time_to_delay > time_delay){
 
                 set_size();
-                time_to_delay = 0;
                 set_rock_position();
 
-                for(auto snake : snakes){
-                    snake -> snake_move();
-                    snake -> snake_direction();
-                    snake -> crash_with_rock();
-                    snake -> feed_me();
-                    snake -> suicide();
-                    snake -> through_walls();
-                    snake -> get_bonus();
-                    if(snake -> direction_changed && time_between_colision < time_to_colison){
-                    snake -> snakes_collision();
+                if(variable_of_speed > constant_of_speed){
+                    for(auto snake : snakes){
+                        snake -> snake_move();
+                        snake -> snake_direction();
+                        snake -> suicide();
+                        snake -> through_walls();
+                        snake -> crash_with_rock();
+                        snake -> feed_me();
+                        snake -> get_bonus();
+                        if(snake -> direction_changed && time_between_colision < time_to_colison){
+                            snake -> snakes_collision();
+                        }
                     }
+                    variable_of_speed = 0;
                 }
                 level_check();
+                time_to_delay = 0;
             }
 
             for(int i = 0; i < window_size_x/size; i++){ // drawing background
@@ -603,19 +630,17 @@ void Board::game(){
             }
 
             if(show_bonus_time > 0.5){
-            shape_bonus.setPosition(bonus.x * size, bonus.y * size); // drawing bonus
-            window.draw(shape_bonus);
+                shape_bonus.setPosition(bonus.x * size, bonus.y * size); // drawing bonus
+                window.draw(shape_bonus);
             }
 
             for(auto snake : snakes){
-                  shape_snake.setTexture(&snake->snake_texture);
+                shape_snake.setTexture(&snake->snake_texture);
                 for(int i = 0; i < snake -> lenght; i++){ // drawing snake
                     shape_snake.setPosition(snake -> ssnake[i].x * size, snake -> ssnake[i].y * size);
                     window.draw(shape_snake);
                 }
             }
-
-
 
             window.draw(text_points);
             window.draw(text_lifes);
