@@ -35,10 +35,11 @@ Board::Board(){
     show_rock_time = 0;
     show_rock_time_variable = 0.0001;
     show_bonus_time = 0;
-    show_bonus_time_variable = 0;
+    show_bonus_time_variable = 0.0001;
     variable_of_speed = 0;
-    constant_of_speed = 10;
+    constant_of_speed = 5;
     level = 1;
+    size_to_next_level = 10;
     level_change = false;
     every_snake_is_alive = true;
 
@@ -240,7 +241,7 @@ void Board::set_size(){
 
 void Board::level_check(){
     for(auto snake : snakes){
-        if(snake -> lenght >= 10){
+        if(snake -> lenght >= size_to_next_level ){
             snake -> lenght = 1;
             level ++;
             level_change = true;
@@ -264,10 +265,13 @@ void Board::set_rock_position(){
 
 void Board::apple__rock(){
     for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){
-        if((apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i])
-                || (apple.x == bonus.x && apple.y == bonus.y)){
+        if(apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i]){
             apple.x = rand() % window_size_x/size;
             apple.y = rand() % window_size_y/size;
+            if(apple.x == bonus.x && apple.y == bonus.y){
+                apple.x = rand() % window_size_x/size;
+                apple.y = rand() % window_size_y/size;
+            }
         }
     }
 }
@@ -290,11 +294,12 @@ void Board::read_from_file(){
     }
     plik.close();
 
-    variable_of_speed = dane[0];
+    constant_of_speed = dane[0];
     show_bonus_time_variable = dane[1];
     for(auto snake : snakes){
         snake->lifes = dane[2];
     }
+    size_to_next_level = dane[3];
 }
 
 void Board::game(){

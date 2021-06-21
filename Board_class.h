@@ -61,6 +61,7 @@ public:
     int fallen;
     float variable_of_speed;
     float constant_of_speed;
+    int size_to_next_level;
 
 private:
 };
