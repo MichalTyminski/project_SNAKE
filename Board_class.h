@@ -62,6 +62,7 @@ public:
     float variable_of_speed;
     float constant_of_speed;
     int size_to_next_level;
+    bool is_paused;
 
 private:
 };

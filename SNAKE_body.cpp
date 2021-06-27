@@ -42,6 +42,7 @@ Board::Board(){
     size_to_next_level = 10;
     level_change = false;
     every_snake_is_alive = true;
+    is_paused = false;
 
     apple.x = rand() % window_size_x/size;
     apple.y = rand() % window_size_y/size;
@@ -304,75 +305,83 @@ void Board::game(){
 
     sf::RenderWindow window(sf::VideoMode(window_size_x, window_size_y+50), "SNAKE by Michal Tyminski");
 
-    sf::Texture text_1, text_2, text_3, text_4, text_5, text_6;
-    if (!text_1.loadFromFile("./level_complete.png"))
+    sf::Texture text_level_complete_, text_contiune_, text_exit_, text_win_, text_thanks_, text_gameover_, text_paused_;
+    if (!text_level_complete_.loadFromFile("./level_complete.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_level_complete_" << std::endl;
     }
     sf::Sprite text_level_complete;
-    text_level_complete.setTexture(text_1);
+    text_level_complete.setTexture(text_level_complete_);
     text_level_complete.setPosition(window_size_x/2 - text_level_complete.getGlobalBounds().width/2, 100);
 
-    if (!text_2.loadFromFile("./contiune.png"))
+    if (!text_contiune_.loadFromFile("./contiune.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_contiune_" << std::endl;
     }
     sf::Sprite text_contiune;
-    text_contiune.setTexture(text_2);
+    text_contiune.setTexture(text_contiune_);
     text_contiune.setPosition(window_size_x/2 - text_contiune.getGlobalBounds().width/2, 275);
 
-    if (!text_3.loadFromFile("./exite.png"))
+    if (!text_exit_.loadFromFile("./exite.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_exit_" << std::endl;
     }
     sf::Sprite text_exit;
-    text_exit.setTexture(text_3);
+    text_exit.setTexture(text_exit_);
     text_exit.setPosition(window_size_x/2 - text_exit.getGlobalBounds().width/2, 350);
 
-    if (!text_4.loadFromFile("./win.png"))
+    if (!text_win_.loadFromFile("./win.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_win_" << std::endl;
     }
     sf::Sprite text_win;
-    text_win.setTexture(text_4);
+    text_win.setTexture(text_win_);
     text_win.setPosition(window_size_x/2 - text_win.getGlobalBounds().width/2, 100);
 
-    if (!text_5.loadFromFile("./thanks.png"))
+    if (!text_thanks_.loadFromFile("./thanks.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_thanks_" << std::endl;
     }
     sf::Sprite text_thanks;
-    text_thanks.setTexture(text_5);
+    text_thanks.setTexture(text_thanks_);
     text_thanks.setPosition(window_size_x/2 - text_thanks.getGlobalBounds().width/2, 480);
 
-    if (!text_6.loadFromFile("./gameover.png"))
+    if (!text_gameover_.loadFromFile("./gameover.png"))
     {
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR text_gameover_" << std::endl;
     }
     sf::Sprite text_gameover;
-    text_gameover.setTexture(text_6);
+    text_gameover.setTexture(text_gameover_);
     text_gameover.setPosition(window_size_x/2 - text_gameover.getGlobalBounds().width/2, 100);
+
+    if (!text_paused_.loadFromFile("./paused.png"))
+    {
+        std::cout << "ERROR text_paused_" << std::endl;
+    }
+    sf::Sprite text_paused;
+    text_paused.setTexture(text_paused_);
+    text_paused.setPosition(window_size_x/2 - text_paused.getGlobalBounds().width/2, 100);
 
     sf::Texture snake_, snake2_, rock_, apple_, bonus_;
 
     if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
-        std::cerr << "Could not load texture" << std::endl;
+        std::cerr << "Could not load texture SnakeSkin.jpeg" << std::endl;
     }
 
     if (!snake2_.loadFromFile("./snakeskin.jpg")) {
-        std::cerr << "Could not load texture" << std::endl;
+        std::cerr << "Could not load texture snakeskin.jpg" << std::endl;
     }
 
     if (!rock_.loadFromFile("./rock.png")) {
-        std::cerr << "Could not load texture" << std::endl;
+        std::cerr << "Could not load texture rock.png" << std::endl;
     }
 
     if (!apple_.loadFromFile("./apple.jfif")) {
-        std::cerr << "Could not load texture" << std::endl;
+        std::cerr << "Could not load texture apple.jfif" << std::endl;
     }
 
     if (!bonus_.loadFromFile("./bonus.png")) {
-        std::cerr << "Could not load texture" << std::endl;
+        std::cerr << "Could not load texture bonus.png" << std::endl;
     }
 
     //show data
@@ -380,7 +389,7 @@ void Board::game(){
 
     sf::Font font;
     if(!font.loadFromFile("Padauk-Regular.ttf")){
-        std::cout << "ERROR" << std::endl;
+        std::cout << "ERROR Padauk-Regular.ttf" << std::endl;
     }
     sf::Text text_points, text_points1, text_points2, text_lifes, text_lifes1, text_lifes2, gameover_youlost;
     sf::Vector2f rectanglesize(20,20);
@@ -444,6 +453,7 @@ void Board::game(){
     window.setFramerateLimit(60);
 
     while (window.isOpen()) {
+        std::cout << is_paused << std::endl;
         set_size();
         variable_of_speed ++;
 
@@ -528,6 +538,11 @@ void Board::game(){
             }
         }
 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+                is_paused = true;
+            }
+
+
         if(!every_snake_is_alive){
             level = 1;
             window.draw(text_gameover);
@@ -543,13 +558,13 @@ void Board::game(){
             if (event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width){
-                        if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
+                            && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
                             window.close();
                         }
                     }
                 }
-            }
+
         }else if(level_change && level == 4){
             window.draw(text_win);
             window.draw(text_exit);
@@ -557,13 +572,13 @@ void Board::game(){
             if (event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width){
-                        if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
+                            && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
                             window.close();
                         }
                     }
                 }
-            }
+
         }else if(level_change){
             window.draw(text_level_complete);
             window.draw(text_contiune);
@@ -571,19 +586,37 @@ void Board::game(){
             if (event.type == sf::Event::MouseButtonPressed) {
                 if(event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    if(mouse_position.x > text_contiune.getGlobalBounds().left && mouse_position.x < text_contiune.getGlobalBounds().left + text_contiune.getGlobalBounds().width){
-                        if(mouse_position.y > text_contiune.getGlobalBounds().top && mouse_position.y < text_contiune.getGlobalBounds().top + text_contiune.getGlobalBounds().height){
+                    if(mouse_position.x > text_contiune.getGlobalBounds().left && mouse_position.x < text_contiune.getGlobalBounds().left + text_contiune.getGlobalBounds().width
+                            && mouse_position.y > text_contiune.getGlobalBounds().top && mouse_position.y < text_contiune.getGlobalBounds().top + text_contiune.getGlobalBounds().height){
                             level_change = false;
                         }
-                    }
-                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width){
-                        if(mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
+                            && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
                             window.close();
                         }
                     }
                 }
+
+        }else if(is_paused == true){
+            window.draw(text_paused);
+            window.draw(text_exit);
+            window.draw(text_contiune);
+            if(event.type == sf::Event::MouseButtonPressed){
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
+                            && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
+                        window.close();
+                    }
+                    if(mouse_position.x > text_contiune.getGlobalBounds().left && mouse_position.x < text_contiune.getGlobalBounds().left + text_contiune.getGlobalBounds().width
+                            && mouse_position.y > text_contiune.getGlobalBounds().top && mouse_position.y < text_contiune.getGlobalBounds().top + text_contiune.getGlobalBounds().height){
+                        is_paused = false;
+                    }
+                }
             }
-        }else{
+
+    }else{
             if(time_to_delay > time_delay){
 
                 set_size();
