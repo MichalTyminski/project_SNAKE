@@ -1,9 +1,9 @@
 #ifndef BOARD_CLASS_H
 #define BOARD_CLASS_H
 
-#include <C:/SFML-2.5.1/include/SFML/Window.hpp>
-#include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
-#include <C:/SFML-2.5.1/include/SFML/Graphics/Text.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <ostream>
 #include <iostream>
 #include "SNAKE_class.h"
@@ -65,5 +65,7 @@ public:
     bool is_paused;
 
 private:
+    sf::SoundBuffer level_complete_buffer;
+    sf::Sound level_complete_sound;
 };
 #endif // BOARD_CLASS_H

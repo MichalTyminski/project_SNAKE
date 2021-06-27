@@ -1,5 +1,6 @@
-#include <C:/SFML-2.5.1/include/SFML/Window.hpp>
-#include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <ostream>
 #include <iostream>
 #include <sstream>
@@ -17,6 +18,15 @@ Snake::Snake(sf::Texture texture_, int control_)
     direction = 1;
     lifes = 3;
     direction_changed = false;
+
+    apple_buffer.loadFromFile("./apple_music.wav");
+    apple_sound.setBuffer(apple_buffer);
+
+    rock_buffer.loadFromFile("./rock_music.wav");
+    rock_sound.setBuffer(rock_buffer);
+
+    bonus_buffer.loadFromFile("./bonus_music.wav");
+    bonus_sound.setBuffer(bonus_buffer);
 }
 
 Snake::~Snake()
@@ -52,6 +62,9 @@ Board::Board(){
 
     bonus.x = rand() % window_size_x/size;
     bonus.y = rand() % window_size_y/size;
+
+    level_complete_buffer.loadFromFile("./level_complete_music.wav");
+    level_complete_sound.setBuffer(level_complete_buffer);
 }
 
 Board::~Board()
@@ -140,6 +153,7 @@ void Snake::snake_direction(){
 void Snake::crash_with_rock(){
     for(unsigned long long i = 0; i < board -> position_of_rock_x.size(); i++){
         if(ssnake[0].x == board -> position_of_rock_x[i] && ssnake[0].y == board -> position_of_rock_y[i] && lenght > 1){
+            rock_sound.play();
             lenght --;
             lifes --;
             board -> position_of_rock_x[i] = rand() % board -> window_size_x/board -> size;
@@ -150,6 +164,7 @@ void Snake::crash_with_rock(){
 
 void Snake::feed_me(){
     if(ssnake[0].x == board -> apple.x && ssnake[0].y == board -> apple.y){
+        apple_sound.play();
         lenght ++;
         board -> apple.x = rand() % board -> window_size_x/board -> size;
         board -> apple.y = rand() % board -> window_size_y/board -> size;
@@ -167,6 +182,7 @@ void Snake::suicide(){
 void Snake::get_bonus(){
     int surprise = 0;
     if(ssnake[0].x == board -> bonus.x && ssnake[0].y == board -> bonus.y && board -> show_bonus_time > 0.5){
+        bonus_sound.play();
         surprise = rand() % 4;
 
         if(surprise == 0){ // dodanie 3 punktow zycia
@@ -246,6 +262,7 @@ void Board::level_check(){
             snake -> lenght = 1;
             level ++;
             level_change = true;
+            level_complete_sound.play();
         }
     }
 }
@@ -362,15 +379,7 @@ void Board::game(){
     text_paused.setTexture(text_paused_);
     text_paused.setPosition(window_size_x/2 - text_paused.getGlobalBounds().width/2, 100);
 
-    sf::Texture snake_, snake2_, rock_, apple_, bonus_;
-
-    if (!snake_.loadFromFile("./SnakeSkin.jpeg")) {
-        std::cerr << "Could not load texture SnakeSkin.jpeg" << std::endl;
-    }
-
-    if (!snake2_.loadFromFile("./snakeskin.jpg")) {
-        std::cerr << "Could not load texture snakeskin.jpg" << std::endl;
-    }
+    sf::Texture rock_, apple_, bonus_;
 
     if (!rock_.loadFromFile("./rock.png")) {
         std::cerr << "Could not load texture rock.png" << std::endl;
@@ -383,6 +392,20 @@ void Board::game(){
     if (!bonus_.loadFromFile("./bonus.png")) {
         std::cerr << "Could not load texture bonus.png" << std::endl;
     }
+
+    sf::Music game_music;
+    if (!game_music.openFromFile("./game_music.ogg")) {
+        std::cerr << "Could not load game_music.ogg" << std::endl;
+    }
+    game_music.setLoop(true);
+    game_music.play();
+
+//    sf::SoundBuffer game_over_buffer;
+//    if (!game_over_buffer.loadFromFile("./lose_music.wav")) {
+//        std::cerr << "Could not load lose_music.wav" << std::endl;
+//    }
+//    sf::Sound game_over_sound;
+//    game_over_sound.setBuffer(game_over_buffer);
 
     //show data
     int points1, points2, lifes1, lifes2;
@@ -402,11 +425,11 @@ void Board::game(){
 
     rectangle1p.setPosition(80, 615);
     rectangle1p.setSize(rectanglesize);
-    rectangle1p.setTexture(&snake_);
+    rectangle1p.setTexture(&snakes[0]->snake_texture);
 
     rectangle2p.setPosition(130, 615);
     rectangle2p.setSize(rectanglesize);
-    rectangle2p.setTexture(&snake2_);
+    rectangle2p.setTexture(&snakes[1]->snake_texture);
 
     text_lifes.setFont(font);
     text_lifes.setString("Lifes: ");
@@ -415,11 +438,11 @@ void Board::game(){
 
     rectangle1l.setPosition(315, 615);
     rectangle1l.setSize(rectanglesize);
-    rectangle1l.setTexture(&snake_);
+    rectangle1l.setTexture(&snakes[0]->snake_texture);
 
     rectangle2l.setPosition(365, 615);
     rectangle2l.setSize(rectanglesize);
-    rectangle2l.setTexture(&snake2_);
+    rectangle2l.setTexture(&snakes[1]->snake_texture);
 
     gameover_youlost.setFont(font);
     gameover_youlost.setString("You lost becouse snake     died");
@@ -428,11 +451,11 @@ void Board::game(){
 
     gameover_snake1.setPosition(385, 285);
     gameover_snake1.setSize(rectanglesize);
-    gameover_snake1.setTexture(&snake_);
+    gameover_snake1.setTexture(&snakes[0]->snake_texture);
 
     gameover_snake2.setPosition(385, 285);
     gameover_snake2.setSize(rectanglesize);
-    gameover_snake2.setTexture(&snake2_);
+    gameover_snake2.setTexture(&snakes[1]->snake_texture);
 
     sf::Clock clock;
     srand(time(NULL));
@@ -453,7 +476,6 @@ void Board::game(){
     window.setFramerateLimit(60);
 
     while (window.isOpen()) {
-        std::cout << is_paused << std::endl;
         set_size();
         variable_of_speed ++;
 
@@ -545,6 +567,8 @@ void Board::game(){
 
         if(!every_snake_is_alive){
             level = 1;
+            game_music.pause();
+            //game_over_sound.play();
             window.draw(text_gameover);
             window.draw(text_exit);
             if(snakes.size() != 1){
@@ -670,6 +694,7 @@ void Board::game(){
                 }
             }
 
+
             window.draw(text_points);
             window.draw(text_lifes);
 
@@ -689,6 +714,7 @@ void Board::game(){
                 window.draw(rectangle2l);
                 window.draw(text_lifes2);
             }
+
         }
         window.display();
     }

@@ -1,5 +1,5 @@
-#include <C:/SFML-2.5.1/include/SFML/Window.hpp>
-#include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <ostream>
 #include <iostream>
 #include "SNAKE_class.h"
@@ -110,3 +110,4 @@ int main()
 }
 
 // https://www.sharetextures.com/textures/animals/snake_skin/ <- miejsce skąd pobrałem tekstury
+// https://mixkit.co/free-sound-effects/game/ <- miejsce skąd pobrałem dźwięki
