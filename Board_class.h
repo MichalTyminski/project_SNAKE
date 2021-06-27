@@ -37,7 +37,7 @@ public:
     void set_size();
     void level_check();
     void set_rock_position();
-    void apple__rock();
+    void apple_rock_bonus();
     void game();
     void read_from_file();
 

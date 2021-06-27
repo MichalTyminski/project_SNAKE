@@ -35,9 +35,9 @@ Board::Board(){
     show_rock_time = 0;
     show_rock_time_variable = 0.0001;
     show_bonus_time = 0;
-    show_bonus_time_variable = 0.0001;
+    show_bonus_time_variable = 0;
     variable_of_speed = 0;
-    constant_of_speed = 5;
+    constant_of_speed = 10;
     level = 1;
     size_to_next_level = 10;
     level_change = false;
@@ -241,7 +241,7 @@ void Board::set_size(){
 
 void Board::level_check(){
     for(auto snake : snakes){
-        if(snake -> lenght >= size_to_next_level ){
+        if(snake -> lenght >= size_to_next_level){
             snake -> lenght = 1;
             level ++;
             level_change = true;
@@ -251,27 +251,23 @@ void Board::level_check(){
 
 void Board::set_rock_position(){
     if(show_rock_time > time_delay){
-        rock.x = rand() % (window_size_x/size);
-        rock.y = rand() % (window_size_y/size);
-        if(rock.x == apple.x && rock.y == apple.y){
+        do{
             rock.x = rand() % (window_size_x/size);
             rock.y = rand() % (window_size_y/size);
-        }
+        }while(rock.x != apple.x && rock.y != apple.y);
+
         position_of_rock_x.emplace_back(rock.x);
         position_of_rock_y.emplace_back(rock.y);
         show_rock_time = 0.0001;
     }
 }
 
-void Board::apple__rock(){
+void Board::apple_rock_bonus(){
     for(unsigned long long i = 0; i < position_of_rock_x.size(); i++){
-        if(apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i]){
+        if((apple.x == position_of_rock_x[i] && apple.y == position_of_rock_y[i])
+                || (apple.x == bonus.x && apple.y == bonus.y)){
             apple.x = rand() % window_size_x/size;
             apple.y = rand() % window_size_y/size;
-            if(apple.x == bonus.x && apple.y == bonus.y){
-                apple.x = rand() % window_size_x/size;
-                apple.y = rand() % window_size_y/size;
-            }
         }
     }
 }
@@ -294,7 +290,7 @@ void Board::read_from_file(){
     }
     plik.close();
 
-    constant_of_speed = dane[0];
+    variable_of_speed = dane[0];
     show_bonus_time_variable = dane[1];
     for(auto snake : snakes){
         snake->lifes = dane[2];
@@ -442,16 +438,8 @@ void Board::game(){
     shape_snake.setOutlineColor(sf::Color::White);
 
     shape_apple.setTexture(&apple_);
-    shape_apple.setOutlineThickness(1);
-    shape_apple.setOutlineColor(sf::Color::White);
-
     shape_rock.setTexture(&rock_);
-    shape_rock.setOutlineThickness(1);
-    shape_rock.setOutlineColor(sf::Color::White);
-
     shape_bonus.setTexture(&bonus_);
-    shape_bonus.setOutlineThickness(1);
-    shape_bonus.setOutlineColor(sf::Color::White);
 
     window.setFramerateLimit(60);
 
@@ -504,12 +492,13 @@ void Board::game(){
         text_lifes2.setPosition(390,610);
 
         sf::Vector2f SIZE(size, size);
+        sf::Vector2f SIZE_e(size-1, size-1);
 
         background.setSize(SIZE);
-        shape_snake.setSize(SIZE);
-        shape_apple.setSize(SIZE);
-        shape_rock.setSize(SIZE);
-        shape_bonus.setSize(SIZE);
+        shape_snake.setSize(SIZE_e);
+        shape_apple.setSize(SIZE_e);
+        shape_rock.setSize(SIZE_e);
+        shape_bonus.setSize(SIZE_e);
 
         float time = clock.getElapsedTime().asSeconds();
 
@@ -609,6 +598,7 @@ void Board::game(){
                         snake -> crash_with_rock();
                         snake -> feed_me();
                         snake -> get_bonus();
+                        apple_rock_bonus();
                         if(snake -> direction_changed && time_between_colision < time_to_colison){
                             snake -> snakes_collision();
                         }
