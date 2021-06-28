@@ -400,13 +400,6 @@ void Board::game(){
     game_music.setLoop(true);
     game_music.play();
 
-//    sf::SoundBuffer game_over_buffer;
-//    if (!game_over_buffer.loadFromFile("./lose_music.wav")) {
-//        std::cerr << "Could not load lose_music.wav" << std::endl;
-//    }
-//    sf::Sound game_over_sound;
-//    game_over_sound.setBuffer(game_over_buffer);
-
     //show data
     int points1, points2, lifes1, lifes2;
 
@@ -554,21 +547,19 @@ void Board::game(){
         window.clear(sf::Color::Black);
 
         for(unsigned long long i = 0; i < snakes.size(); i++){
-            if(snakes[i]->lifes < 0){
+            if(snakes[i]->lifes == 0){
                 every_snake_is_alive = false;
                 fallen = i;
             }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
-                is_paused = true;
-            }
-
+            is_paused = true;
+        }
 
         if(!every_snake_is_alive){
             level = 1;
             game_music.pause();
-            //game_over_sound.play();
             window.draw(text_gameover);
             window.draw(text_exit);
             if(snakes.size() != 1){
@@ -584,11 +575,10 @@ void Board::game(){
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                     if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
                             && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
-                            window.close();
-                        }
+                        window.close();
                     }
                 }
-
+            }
         }else if(level_change && level == 4){
             window.draw(text_win);
             window.draw(text_exit);
@@ -598,11 +588,10 @@ void Board::game(){
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                     if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
                             && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
-                            window.close();
-                        }
+                        window.close();
                     }
                 }
-
+            }
         }else if(level_change){
             window.draw(text_level_complete);
             window.draw(text_contiune);
@@ -612,16 +601,14 @@ void Board::game(){
                     sf::Vector2f mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                     if(mouse_position.x > text_contiune.getGlobalBounds().left && mouse_position.x < text_contiune.getGlobalBounds().left + text_contiune.getGlobalBounds().width
                             && mouse_position.y > text_contiune.getGlobalBounds().top && mouse_position.y < text_contiune.getGlobalBounds().top + text_contiune.getGlobalBounds().height){
-                            level_change = false;
-                        }
-
+                        level_change = false;
+                    }
                     if(mouse_position.x > text_exit.getGlobalBounds().left && mouse_position.x < text_exit.getGlobalBounds().left + text_exit.getGlobalBounds().width
                             && mouse_position.y > text_exit.getGlobalBounds().top && mouse_position.y < text_exit.getGlobalBounds().top + text_exit.getGlobalBounds().height){
-                            window.close();
-                        }
+                        window.close();
                     }
                 }
-
+            }
         }else if(is_paused == true){
             window.draw(text_paused);
             window.draw(text_exit);
@@ -639,10 +626,8 @@ void Board::game(){
                     }
                 }
             }
-
-    }else{
+        }else{
             if(time_to_delay > time_delay){
-
                 set_size();
                 set_rock_position();
 
@@ -694,7 +679,6 @@ void Board::game(){
                 }
             }
 
-
             window.draw(text_points);
             window.draw(text_lifes);
 
@@ -714,7 +698,6 @@ void Board::game(){
                 window.draw(rectangle2l);
                 window.draw(text_lifes2);
             }
-
         }
         window.display();
     }

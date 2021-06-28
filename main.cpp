@@ -99,7 +99,6 @@ int main()
                 }
             }
         }
-
         window.draw(text_welcome);
         window.draw(text_number);
         window.draw(text_1player);
